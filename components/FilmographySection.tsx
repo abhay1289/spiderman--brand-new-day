@@ -243,12 +243,12 @@ export default function FilmographySection() {
         {/* Film cards */}
         {films.map((film, i) => (
           <div key={film.year} className="film-card absolute inset-0 z-10">
-            {/* Mobile: vertical stack | Desktop: side-by-side */}
-            <div className="w-full h-full flex flex-col md:flex-row">
+            {/* Mobile: vertical stack centered | Desktop: side-by-side */}
+            <div className="w-full h-full flex flex-col justify-center items-center md:flex-row md:items-stretch">
 
               {/* ── Top/Left: Poster ── */}
-              <div className="film-poster relative w-full md:w-1/2 flex items-end md:items-center justify-center pt-12 pb-3 md:py-0" style={{ perspective: "900px", flex: "0 0 auto" }}>
-                <div className="relative w-[42vw] max-w-[200px] md:w-[320px] md:max-w-none lg:w-[380px]">
+              <div className="film-poster relative w-full md:w-1/2 flex items-center justify-center md:py-0" style={{ perspective: "900px" }}>
+                <div className="relative w-[44vw] max-w-[200px] md:w-[320px] md:max-w-none lg:w-[380px]">
                   {/* Glow behind poster */}
                   <div className="absolute -inset-8 md:-inset-12 rounded-3xl blur-3xl opacity-[.12] pointer-events-none" style={{
                     background: "radial-gradient(circle, rgba(226,54,54,.6), transparent 70%)",
@@ -318,7 +318,7 @@ export default function FilmographySection() {
               </div>
 
               {/* ── Bottom/Right: Info ── */}
-              <div className="w-full md:w-1/2 flex-1 flex items-start md:items-center px-5 md:px-0 pt-4 md:pt-0 overflow-hidden">
+              <div className="w-full md:w-1/2 flex items-start md:items-center px-5 md:px-0 pt-3 md:pt-0 overflow-hidden">
                 <div className="w-full md:pl-14 lg:pl-20 md:pr-10 lg:pr-16">
 
                   {/* Film number label */}
