@@ -35,10 +35,11 @@ export default function CountdownSection() {
       }
 
       // Countdown units scale up from nothing
+      const isMobile = window.innerWidth < 768;
       gsap.utils.toArray<HTMLElement>(".cd-unit").forEach((unit, i) => {
         gsap.from(unit, {
-          y: 80, opacity: 0, scale: 0.7, rotateX: -15,
-          duration: 1.2, delay: i * 0.12, ease: "back.out(1.2)",
+          y: isMobile ? 40 : 80, opacity: 0, scale: isMobile ? 0.85 : 0.7, rotateX: isMobile ? 0 : -15,
+          duration: isMobile ? 0.9 : 1.2, delay: i * (isMobile ? 0.08 : 0.12), ease: "back.out(1.2)",
           scrollTrigger: { trigger: ".cd-grid", start: "top 82%", toggleActions: "play none none none" },
         });
       });

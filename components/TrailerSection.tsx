@@ -22,12 +22,13 @@ export default function TrailerSection() {
         scrollTrigger: { trigger: ".trailer-card", start: "top 88%", toggleActions: "play none none none" },
       });
 
-      // Parallax on the thumbnail
+      // Parallax on the thumbnail — reduced on mobile
+      const isMobile = window.innerWidth < 768;
       const img = sectionRef.current?.querySelector(".trailer-card img");
       if (img) {
         gsap.to(img, {
-          y: -50, ease: "none",
-          scrollTrigger: { trigger: sectionRef.current, start: "top bottom", end: "bottom top", scrub: 2 },
+          y: isMobile ? -15 : -50, ease: "none",
+          scrollTrigger: { trigger: sectionRef.current, start: "top bottom", end: "bottom top", scrub: isMobile ? 0.8 : 2 },
         });
       }
     }, sectionRef);

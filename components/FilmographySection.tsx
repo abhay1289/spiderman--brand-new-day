@@ -100,15 +100,18 @@ export default function FilmographySection() {
     const cards = Array.from(container.querySelectorAll<HTMLElement>(".film-card"));
     if (cards.length === 0) return;
 
+    const isMobile = window.innerWidth < 768;
+
     const ctx = gsap.context(() => {
       const totalCards = cards.length;
-      const scrollPerCard = window.innerHeight * 0.85;
+      const scrollPerCard = window.innerHeight * (isMobile ? 0.6 : 0.85);
 
       // Initial states with staggered children
       cards.forEach((card, i) => {
         gsap.set(card, {
           opacity: i === 0 ? 1 : 0,
           pointerEvents: i === 0 ? "auto" : "none",
+          force3D: true,
         });
         if (i > 0) {
           const poster = card.querySelector(".film-poster");
@@ -117,12 +120,12 @@ export default function FilmographySection() {
           const filmMeta = card.querySelector(".film-meta");
           const filmSynopsis = card.querySelector(".film-synopsis");
           const filmCredits = card.querySelector(".film-credits");
-          if (poster) gsap.set(poster, { x: -50, opacity: 0, scale: 0.94 });
-          if (filmNum) gsap.set(filmNum, { x: -20, opacity: 0 });
-          if (filmTitle) gsap.set(filmTitle, { y: 30, opacity: 0 });
-          if (filmMeta) gsap.set(filmMeta, { y: 20, opacity: 0 });
-          if (filmSynopsis) gsap.set(filmSynopsis, { y: 20, opacity: 0 });
-          if (filmCredits) gsap.set(filmCredits, { y: 15, opacity: 0 });
+          if (poster) gsap.set(poster, { x: isMobile ? -20 : -50, opacity: 0, scale: isMobile ? 0.97 : 0.94 });
+          if (filmNum) gsap.set(filmNum, { x: isMobile ? -10 : -20, opacity: 0 });
+          if (filmTitle) gsap.set(filmTitle, { y: isMobile ? 15 : 30, opacity: 0 });
+          if (filmMeta) gsap.set(filmMeta, { y: isMobile ? 10 : 20, opacity: 0 });
+          if (filmSynopsis) gsap.set(filmSynopsis, { y: isMobile ? 10 : 20, opacity: 0 });
+          if (filmCredits) gsap.set(filmCredits, { y: isMobile ? 8 : 15, opacity: 0 });
         }
       });
 
@@ -151,9 +154,9 @@ export default function FilmographySection() {
           start: "top top",
           end: () => `+=${scrollPerCard * totalCards}`,
           pin: true,
-          pinType: "transform",
+          pinType: isMobile ? "fixed" : "transform",
           anticipatePin: 1,
-          scrub: 0.8,
+          scrub: isMobile ? 0.3 : 0.8,
           onUpdate: (self) => {
             const progressFill = container.querySelector(".film-progress-fill") as HTMLElement;
             if (progressFill) progressFill.style.transform = `scaleX(${self.progress})`;
@@ -177,18 +180,18 @@ export default function FilmographySection() {
           const nextCredits = next.querySelector(".film-credits");
 
           // Exit current
-          tl.to(card, { opacity: 0, scale: 0.97, pointerEvents: "none", duration: 0.45, ease: "power2.in" }, i + 0.55);
+          tl.to(card, { opacity: 0, pointerEvents: "none", duration: 0.45, ease: "power2.in", force3D: true }, i + 0.55);
 
           // Enter next card
-          tl.to(next, { opacity: 1, pointerEvents: "auto", duration: 0.45, ease: "power2.out" }, i + 0.5);
+          tl.to(next, { opacity: 1, pointerEvents: "auto", duration: 0.45, ease: "power2.out", force3D: true }, i + 0.5);
 
           // Staggered entrance — poster first, then text elements cascade
-          if (nextPoster) tl.to(nextPoster, { x: 0, opacity: 1, scale: 1, duration: 0.6, ease: "power3.out" }, i + 0.5);
-          if (nextNum) tl.to(nextNum, { x: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, i + 0.55);
-          if (nextTitle) tl.to(nextTitle, { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, i + 0.58);
-          if (nextMeta) tl.to(nextMeta, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, i + 0.62);
-          if (nextSynopsis) tl.to(nextSynopsis, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, i + 0.65);
-          if (nextCredits) tl.to(nextCredits, { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" }, i + 0.68);
+          if (nextPoster) tl.to(nextPoster, { x: 0, opacity: 1, scale: 1, duration: isMobile ? 0.5 : 0.6, ease: "power3.out" }, i + 0.5);
+          if (nextNum) tl.to(nextNum, { x: 0, opacity: 1, duration: isMobile ? 0.35 : 0.4, ease: "power3.out" }, i + 0.55);
+          if (nextTitle) tl.to(nextTitle, { y: 0, opacity: 1, duration: isMobile ? 0.4 : 0.5, ease: "power3.out" }, i + 0.58);
+          if (nextMeta) tl.to(nextMeta, { y: 0, opacity: 1, duration: isMobile ? 0.35 : 0.4, ease: "power3.out" }, i + 0.62);
+          if (nextSynopsis) tl.to(nextSynopsis, { y: 0, opacity: 1, duration: isMobile ? 0.35 : 0.45, ease: "power3.out" }, i + 0.65);
+          if (nextCredits) tl.to(nextCredits, { y: 0, opacity: 1, duration: isMobile ? 0.3 : 0.4, ease: "power3.out" }, i + 0.68);
         }
       });
     }, container);
@@ -240,11 +243,11 @@ export default function FilmographySection() {
         {/* Film cards */}
         {films.map((film, i) => (
           <div key={film.year} className="film-card absolute inset-0 z-10">
-            <div className="w-full h-full flex flex-col md:flex-row">
+            <div className="w-full h-full flex flex-row">
 
               {/* ── Left: Poster ── */}
-              <div className="film-poster relative md:w-1/2 flex items-center justify-center py-8 md:py-0" style={{ perspective: "900px" }}>
-                <div className="relative w-[240px] sm:w-[280px] md:w-[320px] lg:w-[380px]">
+              <div className="film-poster relative w-[45%] md:w-1/2 flex items-center justify-center py-4 md:py-0" style={{ perspective: "900px" }}>
+                <div className="relative w-[140px] sm:w-[180px] md:w-[320px] lg:w-[380px]">
                   {/* Glow behind poster */}
                   <div className="absolute -inset-12 rounded-3xl blur-3xl opacity-[.12] pointer-events-none" style={{
                     background: "radial-gradient(circle, rgba(226,54,54,.6), transparent 70%)",
@@ -314,11 +317,11 @@ export default function FilmographySection() {
               </div>
 
               {/* ── Right: Info ── */}
-              <div className="md:w-1/2 flex items-center px-6 md:px-0">
+              <div className="w-[55%] md:w-1/2 flex items-center px-4 md:px-0">
                 <div className="w-full md:pl-14 lg:pl-20 md:pr-10 lg:pr-16">
 
                   {/* Film number label */}
-                  <div className="film-num-label flex items-center gap-3 mb-8">
+                  <div className="film-num-label flex items-center gap-2 md:gap-3 mb-4 md:mb-8">
                     <div className="h-px w-5" style={{ background: "var(--accent-40)" }} />
                     <span className="font-display text-[10px] tracking-[.5em] uppercase" style={{
                       color: "var(--accent)",
@@ -329,12 +332,12 @@ export default function FilmographySection() {
                   </div>
 
                   {/* Title */}
-                  <h3 className="film-title font-serif-accent text-3xl md:text-4xl lg:text-5xl italic leading-[1.15]" style={{ color: "var(--fg)" }}>
+                  <h3 className="film-title font-serif-accent text-lg sm:text-2xl md:text-4xl lg:text-5xl italic leading-[1.15]" style={{ color: "var(--fg)" }}>
                     {film.title}
                   </h3>
 
                   {/* Meta */}
-                  <div className="film-meta flex items-center gap-3 mt-6">
+                  <div className="film-meta flex items-center gap-2 md:gap-3 mt-3 md:mt-6">
                     <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full transition-all duration-300 hover:scale-105" style={{
                       background: "rgba(226,54,54,.08)",
                       border: "1px solid rgba(226,54,54,.12)",
@@ -353,25 +356,25 @@ export default function FilmographySection() {
                   </div>
 
                   {/* Synopsis */}
-                  <p className="film-synopsis mt-7 text-sm leading-[2] font-light" style={{ color: "var(--fg-45)" }}>
+                  <p className="film-synopsis mt-3 md:mt-7 text-xs md:text-sm leading-[1.7] md:leading-[2] font-light" style={{ color: "var(--fg-45)" }}>
                     {film.synopsis}
                   </p>
 
                   {/* Director & Cast — rows with hover highlight */}
-                  <div className="film-credits mt-8 space-y-0" style={{ borderTop: "1px solid var(--fg-06)" }}>
-                    <div className="group/row flex items-center justify-between py-3.5 transition-all duration-300 hover:pl-2" style={{ borderBottom: "1px solid var(--fg-04)" }}>
-                      <span className="font-display text-[9px] tracking-[.4em] uppercase transition-colors duration-300 group-hover/row:text-[rgba(245,245,245,.35)]" style={{ color: "var(--fg-20)" }}>
+                  <div className="film-credits mt-4 md:mt-8 space-y-0" style={{ borderTop: "1px solid var(--fg-06)" }}>
+                    <div className="group/row flex items-center justify-between py-2 md:py-3.5 transition-all duration-300 hover:pl-2" style={{ borderBottom: "1px solid var(--fg-04)" }}>
+                      <span className="font-display text-[8px] md:text-[9px] tracking-[.3em] md:tracking-[.4em] uppercase transition-colors duration-300 group-hover/row:text-[rgba(245,245,245,.35)]" style={{ color: "var(--fg-20)" }}>
                         Director
                       </span>
-                      <span className="text-sm font-light transition-colors duration-300 group-hover/row:text-[rgba(245,245,245,.7)]" style={{ color: "var(--fg-50)" }}>
+                      <span className="text-xs md:text-sm font-light transition-colors duration-300 group-hover/row:text-[rgba(245,245,245,.7)]" style={{ color: "var(--fg-50)" }}>
                         {film.director}
                       </span>
                     </div>
-                    <div className="group/row flex items-center justify-between py-3.5 transition-all duration-300 hover:pl-2">
-                      <span className="font-display text-[9px] tracking-[.4em] uppercase transition-colors duration-300 group-hover/row:text-[rgba(245,245,245,.35)]" style={{ color: "var(--fg-20)" }}>
+                    <div className="group/row flex items-center justify-between py-2 md:py-3.5 transition-all duration-300 hover:pl-2">
+                      <span className="font-display text-[8px] md:text-[9px] tracking-[.3em] md:tracking-[.4em] uppercase transition-colors duration-300 group-hover/row:text-[rgba(245,245,245,.35)]" style={{ color: "var(--fg-20)" }}>
                         Cast
                       </span>
-                      <span className="text-sm font-light text-right transition-colors duration-300 group-hover/row:text-[rgba(226,54,54,.7)]" style={{ color: "var(--accent-50)" }}>
+                      <span className="text-xs md:text-sm font-light text-right transition-colors duration-300 group-hover/row:text-[rgba(226,54,54,.7)]" style={{ color: "var(--accent-50)" }}>
                         {film.cast}
                       </span>
                     </div>

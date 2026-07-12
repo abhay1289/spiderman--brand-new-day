@@ -34,12 +34,14 @@ export default function GallerySection() {
   }, []);
 
   useEffect(() => {
+    const isMobile = window.innerWidth < 768;
+
     const ctx = gsap.context(() => {
       gsap.utils.toArray<HTMLElement>(".gal-card").forEach((card, i) => {
         // Clip-path reveal — wipes in from bottom
         gsap.from(card, {
           clipPath: "inset(100% 0 0 0)", opacity: 0,
-          duration: 1.3, delay: i * 0.1, ease: "power4.inOut",
+          duration: isMobile ? 0.9 : 1.3, delay: i * (isMobile ? 0.05 : 0.1), ease: "power4.inOut",
           scrollTrigger: { trigger: card, start: "top 92%", toggleActions: "play none none none" },
         });
 
@@ -47,14 +49,14 @@ export default function GallerySection() {
         const img = card.querySelector("img");
         if (img) {
           gsap.from(img, {
-            scale: 1.35, duration: 1.8, delay: i * 0.1, ease: "power3.out",
+            scale: isMobile ? 1.15 : 1.35, duration: isMobile ? 1.2 : 1.8, delay: i * (isMobile ? 0.05 : 0.1), ease: "power3.out",
             scrollTrigger: { trigger: card, start: "top 92%", toggleActions: "play none none none" },
           });
 
-          // Parallax on scroll
+          // Parallax on scroll — reduced on mobile
           gsap.to(img, {
-            y: -40, ease: "none",
-            scrollTrigger: { trigger: card, start: "top bottom", end: "bottom top", scrub: 1.5 },
+            y: isMobile ? -15 : -40, ease: "none",
+            scrollTrigger: { trigger: card, start: "top bottom", end: "bottom top", scrub: isMobile ? 0.8 : 1.5 },
           });
         }
       });

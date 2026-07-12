@@ -31,16 +31,17 @@ export default function CharactersSection() {
       }
 
       // Staggered card entrance with slight rotation
+      const isMobile = window.innerWidth < 768;
       gsap.utils.toArray<HTMLElement>(".cast-card").forEach((card, i) => {
         gsap.from(card, {
-          y: 100, opacity: 0, scale: 0.88, rotateY: i % 2 === 0 ? -8 : 8,
+          y: isMobile ? 50 : 100, opacity: 0, scale: isMobile ? 0.94 : 0.88, rotateY: isMobile ? 0 : (i % 2 === 0 ? -8 : 8),
           duration: 1.2, delay: i * 0.07, ease: "power4.out",
           scrollTrigger: { trigger: ".cast-grid", start: "top 82%", toggleActions: "play none none none" },
         });
 
-        // Subtle parallax per card on scroll
+        // Subtle parallax per card on scroll — reduced on mobile
         gsap.to(card, {
-          y: (i % 2 === 0 ? -20 : -35), ease: "none",
+          y: isMobile ? (i % 2 === 0 ? -6 : -10) : (i % 2 === 0 ? -20 : -35), ease: "none",
           scrollTrigger: { trigger: card, start: "top bottom", end: "bottom top", scrub: 2 },
         });
       });
@@ -82,14 +83,14 @@ export default function CharactersSection() {
               <div className="absolute inset-0 z-[1] opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ background: `linear-gradient(to top, rgba(var(--img-overlay),.92) 0%, rgba(var(--img-overlay),.15) 50%, transparent 70%)` }} />
 
               {/* Content */}
-              <div className="absolute bottom-0 left-0 right-0 z-10 p-4 md:p-5">
-                <div className="inline-flex items-center gap-1.5 mb-2 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
-                  <div className="w-1.5 h-1.5 rotate-45" style={{ background: m.accent }} />
-                  <span className="font-display text-[8px] tracking-[.3em] uppercase" style={{ color: m.accent }}>{m.character}</span>
+              <div className="absolute bottom-0 left-0 right-0 z-10 p-3 md:p-5">
+                <div className="inline-flex items-center gap-1 md:gap-1.5 mb-1.5 md:mb-2 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
+                  <div className="w-1 h-1 md:w-1.5 md:h-1.5 rotate-45" style={{ background: m.accent }} />
+                  <span className="font-display text-[7px] md:text-[8px] tracking-[.2em] md:tracking-[.3em] uppercase" style={{ color: m.accent }}>{m.character}</span>
                 </div>
-                <h3 className="font-display text-xs md:text-sm tracking-[.2em] uppercase transition-all duration-700 ease-out group-hover:-translate-y-0.5 group-hover:tracking-[.25em]" style={{ color: "var(--fg)" }}>{m.name}</h3>
-                <div className="h-px w-8 my-2 origin-left transition-all duration-700 ease-out group-hover:w-12" style={{ background: `linear-gradient(to right, ${m.accent}, transparent)` }} />
-                <p className="text-[11px] leading-[1.7] max-h-0 opacity-0 group-hover:max-h-24 group-hover:opacity-100 transition-all duration-700 ease-out overflow-hidden" style={{ color: "var(--fg-70)" }}>{m.description}</p>
+                <h3 className="font-display text-[10px] md:text-sm tracking-[.15em] md:tracking-[.2em] uppercase transition-all duration-700 ease-out group-hover:-translate-y-0.5 group-hover:tracking-[.25em]" style={{ color: "var(--fg)" }}>{m.name}</h3>
+                <div className="h-px w-6 md:w-8 my-1.5 md:my-2 origin-left transition-all duration-700 ease-out group-hover:w-12" style={{ background: `linear-gradient(to right, ${m.accent}, transparent)` }} />
+                <p className="text-[10px] md:text-[11px] leading-[1.5] md:leading-[1.7] max-h-0 opacity-0 group-hover:max-h-24 group-hover:opacity-100 transition-all duration-700 ease-out overflow-hidden" style={{ color: "var(--fg-70)" }}>{m.description}</p>
               </div>
             </div>
           ))}

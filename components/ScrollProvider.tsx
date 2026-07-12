@@ -9,14 +9,16 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function ScrollProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    // ── Lenis ultra-smooth scroll ──
+    // ── Lenis ultra-smooth scroll (disabled on touch devices to prevent jank with ScrollTrigger pins) ──
+    const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
     const lenis = new Lenis({
       duration: 1.6,
       easing: (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -13 * t)),
-      smoothWheel: true,
+      smoothWheel: !isTouchDevice,
       wheelMultiplier: 0.85,
-      touchMultiplier: 1.8,
+      touchMultiplier: 1,
       infinite: false,
+      syncTouch: false,
     });
 
     lenis.on("scroll", ScrollTrigger.update);
@@ -89,17 +91,18 @@ export default function ScrollProvider({ children }: { children: React.ReactNode
     // ── Smooth section fade-in on scroll ──
     // Each major section fades/slides up as it enters the viewport
     const setupSectionTransitions = () => {
+      const isMobileDevice = window.innerWidth < 768;
       gsap.utils.toArray<HTMLElement>("section[id]").forEach((section) => {
         // Skip hero (own entrance) and story (pinned horizontal scroll conflicts with y offset)
         if (section.id === "hero" || section.id === "story" || section.id === "filmography") return;
 
         gsap.fromTo(section, {
           opacity: 0,
-          y: 60,
+          y: isMobileDevice ? 30 : 60,
         }, {
           opacity: 1,
           y: 0,
-          duration: 1,
+          duration: isMobileDevice ? 0.7 : 1,
           ease: "power3.out",
           scrollTrigger: {
             trigger: section,

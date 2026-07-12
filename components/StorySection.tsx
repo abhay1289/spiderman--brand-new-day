@@ -20,6 +20,8 @@ export default function StorySection() {
   useEffect(() => {
     const progressBar = containerRef.current?.querySelector(".story-progress-fill") as HTMLElement | null;
 
+    const isMobile = window.innerWidth < 768;
+
     const ctx = gsap.context(() => {
       const track = trackRef.current!;
       const panels = gsap.utils.toArray<HTMLElement>(".story-panel");
@@ -32,8 +34,8 @@ export default function StorySection() {
           start: "top top",
           end: () => `+=${totalScroll()}`,
           pin: true,
-          pinType: "transform",
-          scrub: 2,
+          pinType: isMobile ? "fixed" : "transform",
+          scrub: isMobile ? 0.5 : 2,
           invalidateOnRefresh: true,
           anticipatePin: 1,
           onUpdate: (self) => {
@@ -50,31 +52,31 @@ export default function StorySection() {
         const txt = panel.querySelector(".panel-text");
         const dots = panel.querySelector(".panel-dots");
 
-        // Parallax background with subtle scale
+        // Parallax background with subtle scale — reduced on mobile
         if (bg) {
-          gsap.fromTo(bg, { x: -100, scale: 1.1 }, {
-            x: 100, scale: 1, ease: "none",
+          gsap.fromTo(bg, { x: isMobile ? -30 : -100, scale: isMobile ? 1.05 : 1.1 }, {
+            x: isMobile ? 30 : 100, scale: 1, ease: "none",
             scrollTrigger: { trigger: panel, containerAnimation: horizontalTween, start: "left right", end: "right left", scrub: true },
           });
         }
 
         // Staggered content reveal per panel
         const tl = gsap.timeline({
-          scrollTrigger: { trigger: panel, containerAnimation: horizontalTween, start: "left 75%", end: "left 25%", scrub: 1 },
+          scrollTrigger: { trigger: panel, containerAnimation: horizontalTween, start: "left 75%", end: "left 25%", scrub: isMobile ? 0.5 : 1 },
         });
 
-        tl.from(num, { y: 40, opacity: 0, duration: 0.3, ease: "power3.out" })
+        tl.from(num, { y: isMobile ? 20 : 40, opacity: 0, duration: 0.3, ease: "power3.out" })
           .from(line, { scaleX: 0, duration: 0.4, ease: "power2.inOut" }, "-=.1")
-          .from(ttl, { y: 100, opacity: 0, duration: 0.6, ease: "power4.out" }, "-=.15")
-          .from(txt, { y: 60, opacity: 0, duration: 0.5, ease: "power3.out" }, "-=.25");
+          .from(ttl, { y: isMobile ? 40 : 100, opacity: 0, duration: 0.6, ease: "power4.out" }, "-=.15")
+          .from(txt, { y: isMobile ? 25 : 60, opacity: 0, duration: 0.5, ease: "power3.out" }, "-=.25");
 
         if (dots) {
-          tl.from(dots, { opacity: 0, y: 20, duration: 0.3, ease: "power2.out" }, "-=.2");
+          tl.from(dots, { opacity: 0, y: isMobile ? 10 : 20, duration: 0.3, ease: "power2.out" }, "-=.2");
         }
 
-        // Subtle fade-out as panel leaves
+        // Subtle fade-out as panel leaves — reduced on mobile
         gsap.to(panel.querySelector(".relative.z-10"), {
-          opacity: 0.3, x: i % 2 === 0 ? -30 : 30,
+          opacity: isMobile ? 0.5 : 0.3, x: isMobile ? 0 : (i % 2 === 0 ? -30 : 30),
           ease: "power2.in",
           scrollTrigger: { trigger: panel, containerAnimation: horizontalTween, start: "right 30%", end: "right left", scrub: true },
         });
@@ -95,12 +97,12 @@ export default function StorySection() {
               <div className="absolute inset-0 z-[1]" style={{ background: i % 2 === 0 ? `linear-gradient(to right, rgba(var(--img-overlay),.7), rgba(var(--img-overlay),.2), transparent)` : `linear-gradient(to left, rgba(var(--img-overlay),.7), rgba(var(--img-overlay),.2), transparent)` }} />
               <div className="absolute inset-0 z-[1]" style={{ background: `linear-gradient(to top, rgba(var(--img-overlay),.8), transparent, rgba(var(--img-overlay),.2))` }} />
 
-              <div className={`relative z-10 w-full px-8 md:px-16 lg:px-24 flex ${i % 2 === 0 ? "justify-start" : "justify-end"}`}>
+              <div className={`relative z-10 w-full px-6 md:px-16 lg:px-24 flex ${i % 2 === 0 ? "justify-start" : "justify-end"}`}>
                 <div className={`max-w-lg ${i % 2 === 0 ? "text-left" : "text-right"}`}>
                   <span className="panel-num inline-block font-display text-[10px] tracking-[.5em] uppercase" style={{ color: "var(--accent)", textShadow: "0 0 20px rgba(226,54,54,.3)" }}>Chapter {ch.number}</span>
-                  <div className={`panel-line h-px my-5 w-16 ${i % 2 === 0 ? "origin-left" : "origin-right ml-auto"}`} style={{ background: "var(--accent-40)" }} />
-                  <h3 className="panel-title font-serif-accent text-3xl md:text-5xl lg:text-6xl italic" style={{ color: "var(--fg)" }}>{ch.title}</h3>
-                  <p className="panel-text mt-6 md:mt-8 leading-[1.9] text-sm md:text-base font-light" style={{ color: "var(--fg-90)" }}>{ch.text}</p>
+                  <div className={`panel-line h-px my-3 md:my-5 w-12 md:w-16 ${i % 2 === 0 ? "origin-left" : "origin-right ml-auto"}`} style={{ background: "var(--accent-40)" }} />
+                  <h3 className="panel-title font-serif-accent text-2xl md:text-5xl lg:text-6xl italic" style={{ color: "var(--fg)" }}>{ch.title}</h3>
+                  <p className="panel-text mt-4 md:mt-8 leading-[1.7] md:leading-[1.9] text-xs md:text-base font-light" style={{ color: "var(--fg-90)" }}>{ch.text}</p>
                   <div className={`panel-dots flex gap-2 mt-8 ${i % 2 === 0 ? "" : "justify-end"}`}>
                     {chapters.map((_, j) => (
                       <div key={j} className="rounded-full transition-all duration-500" style={{ width: j === i ? 8 : 6, height: j === i ? 8 : 6, background: j === i ? "var(--accent-70)" : "var(--fg-15)", boxShadow: j === i ? "0 0 8px rgba(226,54,54,.3)" : "none" }} />
