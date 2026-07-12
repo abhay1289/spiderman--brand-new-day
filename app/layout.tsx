@@ -17,10 +17,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="dark" className={`${orbitron.variable} ${rajdhani.variable} ${playfair.variable} ${caveat.variable}`} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: `try{const t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}` }} />
-      </head>
+    <html lang="en" data-theme="dark" className={`${orbitron.variable} ${rajdhani.variable} ${playfair.variable} ${caveat.variable}`}>
+      <head />
       <body className="antialiased">
         <SpiderCursor />
         <WebClickEffect />

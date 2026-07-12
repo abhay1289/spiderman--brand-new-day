@@ -44,37 +44,6 @@
   --img-overlay: var(--c-bg);
 }
 
-/* ── LIGHT THEME ───────────────────────────────────────────── */
-[data-theme="light"] {
-  color-scheme: light;
-  --c-bg: 225,220,210; --c-fg: 32,28,24;
-  --bg: #e1dcd2; --bg-90: rgba(225,220,210,.9); --bg-85: rgba(225,220,210,.85);
-  --bg-80: rgba(225,220,210,.8); --bg-75: rgba(225,220,210,.75);
-  --bg-60: rgba(225,220,210,.6); --bg-50: rgba(225,220,210,.5);
-  --bg-40: rgba(225,220,210,.4); --bg-30: rgba(225,220,210,.3);
-  --bg-20: rgba(225,220,210,.2);
-  --fg: #201c18; --fg-90: rgba(32,28,24,.85);
-  --fg-70: rgba(32,28,24,.7); --fg-60: rgba(32,28,24,.6);
-  --fg-50: rgba(32,28,24,.5);
-  --fg-45: rgba(32,28,24,.45); --fg-40: rgba(32,28,24,.4);
-  --fg-35: rgba(32,28,24,.35); --fg-30: rgba(32,28,24,.3);
-  --fg-25: rgba(32,28,24,.25); --fg-20: rgba(32,28,24,.2);
-  --fg-15: rgba(32,28,24,.15); --fg-12: rgba(32,28,24,.12);
-  --fg-10: rgba(32,28,24,.1); --fg-08: rgba(32,28,24,.08);
-  --fg-05: rgba(32,28,24,.05); --fg-04: rgba(32,28,24,.04);
-  --fg-03: rgba(32,28,24,.03); --fg-02: rgba(32,28,24,.02);
-  --c-accent: 180,38,38;
-  --accent: #b42626; --accent-70: rgba(180,38,38,.7); --accent-60: rgba(180,38,38,.6);
-  --accent-50: rgba(180,38,38,.5); --accent-45: rgba(180,38,38,.45);
-  --accent-40: rgba(180,38,38,.4); --accent-35: rgba(180,38,38,.35);
-  --accent-30: rgba(180,38,38,.3); --accent-25: rgba(180,38,38,.22);
-  --accent-20: rgba(180,38,38,.2); --accent-15: rgba(180,38,38,.14);
-  --accent-06: rgba(180,38,38,.06);
-  --card-bg: rgba(215,210,200,.45);
-  --card-border: rgba(0,0,0,.08);
-  --shadow-base: 50,40,30;
-  --img-overlay: 20,18,16;
-}
 
 /* ── Base ───────────────────────────────────────────────────── */
 html { scroll-behavior: auto; transition: background .6s ease, color .6s ease; overscroll-behavior: none; }
@@ -129,7 +98,6 @@ p, span, cite, blockquote { text-rendering: optimizeLegibility; }
   border: 1px solid var(--card-border);
   transition: background .5s ease, border-color .5s ease, box-shadow .5s ease;
 }
-[data-theme="light"] .glass { box-shadow: 0 4px 24px rgba(var(--shadow-base),.08), 0 1px 3px rgba(var(--shadow-base),.06); }
 
 /* ── 3D & Perspective ──────────────────────────────────────── */
 .perspective-deep { perspective: 1200px; }
@@ -219,35 +187,6 @@ p, span, cite, blockquote { text-rendering: optimizeLegibility; }
 .glitch::before { color: #fff; animation: glitch-1 6s infinite linear; z-index: -1; }
 .glitch::after { color: #fff; animation: glitch-2 6s infinite linear; z-index: -1; }
 
-/* ── Light theme: keep text white on image sections ──────── */
-[data-theme="light"] nav,
-[data-theme="light"] #hero,
-[data-theme="light"] .story-panel,
-[data-theme="light"] #filmography,
-[data-theme="light"] #release,
-[data-theme="light"] #trailer {
-  --fg: #f5f5f5;
-  --fg-90: rgba(245,245,245,.9);
-  --fg-70: rgba(245,245,245,.7);
-  --fg-60: rgba(245,245,245,.6);
-  --fg-50: rgba(245,245,245,.5);
-  --fg-45: rgba(245,245,245,.45);
-  --fg-40: rgba(245,245,245,.4);
-  --fg-35: rgba(245,245,245,.35);
-  --fg-30: rgba(245,245,245,.3);
-  --fg-25: rgba(245,245,245,.25);
-  --fg-20: rgba(245,245,245,.2);
-  --fg-15: rgba(245,245,245,.15);
-  --fg-12: rgba(245,245,245,.12);
-  --fg-10: rgba(245,245,245,.1);
-  --fg-08: rgba(245,245,245,.08);
-  --fg-05: rgba(245,245,245,.05);
-  --accent: #e23636;
-  --accent-70: rgba(226,54,54,.7);
-  --accent-60: rgba(226,54,54,.6);
-  --accent-50: rgba(226,54,54,.5);
-  --accent-40: rgba(226,54,54,.4);
-}
 
 /* ── Card Shine Sweep ─────────────────────────────────────── */
 .card-shine { position: relative; }

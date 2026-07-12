@@ -13,16 +13,9 @@ const links = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [progress, setProgress] = useState(0);
   const [activeSection, setActiveSection] = useState("");
   const barRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const saved = (localStorage.getItem("theme") as "dark" | "light") || "dark";
-    setTheme(saved);
-    document.documentElement.setAttribute("data-theme", saved);
-  }, []);
 
   useEffect(() => {
     const sections = document.querySelectorAll("section[id]");
@@ -51,13 +44,6 @@ export default function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  const toggleTheme = () => {
-    const next = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    document.documentElement.setAttribute("data-theme", next);
-    localStorage.setItem("theme", next);
-  };
 
   return (
     <nav
@@ -116,45 +102,43 @@ export default function Navbar() {
           </div>
 
           <button
-            onClick={toggleTheme}
-            className="relative w-9 h-9 rounded-full flex items-center justify-center transition-all duration-500 hover:bg-[var(--fg-08)] hover:scale-110 active:scale-95"
-            aria-label="Toggle theme"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className={`absolute transition-all duration-500 ${theme === "light" ? "opacity-100 rotate-0 scale-100" : "opacity-0 rotate-90 scale-75"}`} style={{ color: "var(--accent)" }}>
-              <circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-            </svg>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className={`absolute transition-all duration-500 ${theme === "dark" ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-90 scale-75"}`} style={{ color: "var(--fg-50)" }}>
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-            </svg>
-          </button>
-
-          <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden flex flex-col gap-1.5 p-2"
+            className="md:hidden relative w-10 h-10 flex items-center justify-center"
             aria-label="Toggle menu"
           >
-            <span className={`block w-5 h-px transition-all duration-500 ${menuOpen ? "rotate-45 translate-y-[3.5px]" : ""}`} style={{ background: "var(--fg)" }} />
-            <span className={`block w-5 h-px transition-all duration-500 ${menuOpen ? "opacity-0 scale-x-0" : ""}`} style={{ background: "var(--fg)" }} />
-            <span className={`block w-5 h-px transition-all duration-500 ${menuOpen ? "-rotate-45 -translate-y-[3.5px]" : ""}`} style={{ background: "var(--fg)" }} />
+            <span className={`absolute block w-5 h-[1.5px] rounded-full transition-all duration-500 ease-[cubic-bezier(.4,0,.2,1)] ${menuOpen ? "rotate-45 bg-[#e23636]" : "-translate-y-[5px]"}`} style={{ background: menuOpen ? undefined : "var(--fg)" }} />
+            <span className={`absolute block w-5 h-[1.5px] rounded-full transition-all duration-300 ${menuOpen ? "opacity-0 scale-x-0" : ""}`} style={{ background: "var(--fg)" }} />
+            <span className={`absolute block w-5 h-[1.5px] rounded-full transition-all duration-500 ease-[cubic-bezier(.4,0,.2,1)] ${menuOpen ? "-rotate-45 bg-[#e23636]" : "translate-y-[5px]"}`} style={{ background: menuOpen ? undefined : "var(--fg)" }} />
           </button>
         </div>
       </div>
 
-
-      {/* Mobile menu */}
-      <div className={`md:hidden overflow-hidden transition-all duration-500 ${menuOpen ? "max-h-60 opacity-100" : "max-h-0 opacity-0"}`}>
-        <div className="px-6 pb-6 flex flex-col gap-4 backdrop-blur-md" style={{ background: "var(--bg-90)" }}>
+      {/* Mobile menu — fullscreen overlay */}
+      <div
+        className={`md:hidden fixed inset-0 z-40 transition-all duration-500 ${menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+        style={{ background: "rgba(6,6,8,.97)", backdropFilter: "blur(20px)" }}
+      >
+        <div className="flex flex-col justify-center items-center h-full gap-1">
           {links.map((l, i) => (
             <a
               key={l.label}
               href={l.href}
               onClick={() => setMenuOpen(false)}
-              className="font-display text-sm tracking-[.25em] uppercase transition-all duration-500 hover:text-[var(--accent)] hover:translate-x-2"
-              style={{ color: "var(--fg-50)", transitionDelay: menuOpen ? `${i * 80}ms` : "0ms" }}
+              className="font-display text-2xl tracking-[.3em] uppercase py-4 transition-all duration-500"
+              style={{
+                color: activeSection === l.href.slice(1) ? "#e23636" : "rgba(245,245,245,.5)",
+                transform: menuOpen ? "translateY(0)" : `translateY(${20 + i * 10}px)`,
+                opacity: menuOpen ? 1 : 0,
+                transitionDelay: menuOpen ? `${150 + i * 60}ms` : "0ms",
+              }}
             >
               {l.label}
             </a>
           ))}
+          <div className="mt-8 h-px w-12" style={{ background: "linear-gradient(to right, transparent, rgba(226,54,54,.3), transparent)" }} />
+          <p className="mt-4 font-display text-[8px] tracking-[.5em] uppercase" style={{ color: "rgba(245,245,245,.2)" }}>
+            July 31, 2026
+          </p>
         </div>
       </div>
     </nav>
