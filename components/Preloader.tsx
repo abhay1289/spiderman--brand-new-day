@@ -45,59 +45,56 @@ export default function Preloader() {
       .set(rW, { strokeDasharray: rwLen, strokeDashoffset: rwLen, fill: "none", opacity: 0 })
       .set(group, { opacity: 0 });
 
-    let t = 0.5;
+    let t = 0.3;
 
     // ═══ EYES OPEN ═══
-    tl.to(group, { opacity: 1, duration: 0.3 }, t);
-    tl.to(lPath, { strokeDashoffset: 0, duration: 0.8, ease: "power2.inOut" }, t + 0.05)
-      .to(rPath, { strokeDashoffset: 0, duration: 0.8, ease: "power2.inOut" }, t + 0.1);
-    tl.to([lPath, rPath], { fill: "#080808", duration: 0.4, ease: "power2.out" }, t + 0.6);
-    t += 1.2;
+    tl.to(group, { opacity: 1, duration: 0.2 }, t);
+    tl.to(lPath, { strokeDashoffset: 0, duration: 0.5, ease: "power2.inOut" }, t + 0.03)
+      .to(rPath, { strokeDashoffset: 0, duration: 0.5, ease: "power2.inOut" }, t + 0.06);
+    tl.to([lPath, rPath], { fill: "#080808", duration: 0.25, ease: "power2.out" }, t + 0.35);
+    t += 0.75;
 
     // Lenses activate
-    tl.to([lW, rW], { opacity: 1, duration: 0.08 }, t);
-    tl.to(lW, { strokeDashoffset: 0, duration: 0.5, ease: "power2.inOut" }, t)
-      .to(rW, { strokeDashoffset: 0, duration: 0.5, ease: "power2.inOut" }, t + 0.04);
-    tl.to([lW, rW], { fill: "url(#lensFill)", duration: 0.4, ease: "power2.out" }, t + 0.3);
-    t += 0.9;
-
-    // ═══ LOOK LEFT ═══
-    tl.to(group, { x: -18, duration: 0.5, ease: "power2.out" }, t);
-    tl.to(group, { scaleY: 0.92, duration: 0.25, ease: "power1.out" }, t)
-      .to(group, { scaleY: 1, duration: 0.3, ease: "power1.out" }, t + 0.25);
-    t += 0.8;
-
-    // ═══ LOOK RIGHT ═══
-    tl.to(group, { x: 20, duration: 0.7, ease: "power2.inOut" }, t);
-    tl.to(group, { scaleY: 0.9, duration: 0.2, ease: "power1.out" }, t + 0.1)
-      .to(group, { scaleY: 1, duration: 0.3, ease: "power1.out" }, t + 0.3);
-    t += 1.0;
-
-    // ═══ SETTLE CENTER ═══
-    tl.to(group, { x: 0, duration: 0.45, ease: "elastic.out(1, 0.65)" }, t);
+    tl.to([lW, rW], { opacity: 1, duration: 0.06 }, t);
+    tl.to(lW, { strokeDashoffset: 0, duration: 0.35, ease: "power2.inOut" }, t)
+      .to(rW, { strokeDashoffset: 0, duration: 0.35, ease: "power2.inOut" }, t + 0.03);
+    tl.to([lW, rW], { fill: "url(#lensFill)", duration: 0.25, ease: "power2.out" }, t + 0.2);
     t += 0.55;
 
+    // ═══ LOOK LEFT ═══
+    tl.to(group, { x: -18, duration: 0.35, ease: "power2.out" }, t);
+    tl.to(group, { scaleY: 0.92, duration: 0.15, ease: "power1.out" }, t)
+      .to(group, { scaleY: 1, duration: 0.2, ease: "power1.out" }, t + 0.15);
+    t += 0.5;
+
+    // ═══ LOOK RIGHT ═══
+    tl.to(group, { x: 20, duration: 0.45, ease: "power2.inOut" }, t);
+    tl.to(group, { scaleY: 0.9, duration: 0.15, ease: "power1.out" }, t + 0.05)
+      .to(group, { scaleY: 1, duration: 0.2, ease: "power1.out" }, t + 0.2);
+    t += 0.6;
+
+    // ═══ SETTLE CENTER ═══
+    tl.to(group, { x: 0, duration: 0.3, ease: "elastic.out(1, 0.65)" }, t);
+    t += 0.35;
+
     // ═══ ONE BLINK — then cinematic iris reveal ═══
-    // Blink shut
-    tl.to(group, { scaleY: 0.02, duration: 0.1, ease: "power4.in" }, t);
-    t += 0.2; // Beat of darkness — tension builds
+    tl.to(group, { scaleY: 0.02, duration: 0.08, ease: "power4.in" }, t);
+    t += 0.12;
 
     // Signal hero to prepare behind the mask
     tl.call(() => window.dispatchEvent(new Event("preloader-exit")), [], t);
 
-    // Eyes REOPEN with dramatic intensity — like awakening
-    tl.to(group, { scaleY: 1.3, scaleX: 1.15, duration: 0.4, ease: "back.out(1.8)" }, t);
+    // Eyes REOPEN with dramatic intensity
+    tl.to(group, { scaleY: 1.3, scaleX: 1.15, duration: 0.3, ease: "back.out(1.8)" }, t);
 
-    t += 0.25;
+    t += 0.15;
 
-    // ── Iris reveal — hero emerges through the eye opening ──
-    // A radial mask punches a growing hole in the dark overlay,
-    // exactly like light pouring through the Spider-Man mask lenses
+    // ── Iris reveal ──
     const maxR = Math.hypot(window.innerWidth, window.innerHeight);
     const revealProxy = { r: 0 };
     tl.to(revealProxy, {
       r: maxR,
-      duration: 1.6,
+      duration: 1.1,
       ease: "power3.inOut",
       onUpdate: () => {
         const r = revealProxy.r;
@@ -110,22 +107,22 @@ export default function Preloader() {
       },
     }, t);
 
-    // SVG eyes zoom toward you — like you're flying through them
+    // SVG eyes zoom toward you
     tl.to(wrap, {
       scale: 16,
       opacity: 0,
-      duration: 1.5,
+      duration: 1.0,
       ease: "power2.inOut",
-    }, t + 0.05);
+    }, t + 0.03);
 
-    // Eyes widen further during zoom — adds life
+    // Eyes widen further during zoom
     tl.to(group, {
       scaleX: 2, scaleY: 2,
-      duration: 1.2, ease: "power2.in",
-    }, t + 0.1);
+      duration: 0.8, ease: "power2.in",
+    }, t + 0.05);
 
     // Final cleanup
-    tl.set(root.current, { display: "none" }, t + 1.8);
+    tl.set(root.current, { display: "none" }, t + 1.2);
 
     return () => {
       tl.kill();
