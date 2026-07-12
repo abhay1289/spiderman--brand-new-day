@@ -121,9 +121,9 @@ export default function HeroSection() {
         });
       }
 
-      // ── Simple crossfade slideshow — 3s per image, no Ken Burns ──
+      // ── Cinematic zoom-in crossfade — 4s per image ──
       let current = 0;
-      const holdDuration = 3;
+      const holdDuration = 4;
       const fadeDuration = 1;
 
       const runSlide = () => {
@@ -131,9 +131,13 @@ export default function HeroSection() {
         const cur = slides[current];
         const next = slides[nextIdx];
 
-        gsap.set(next, { scale: 1.05, opacity: 0 });
+        // Crossfade
+        gsap.set(next, { scale: 1, opacity: 0, force3D: true });
         gsap.to(next, { opacity: 1, duration: fadeDuration, ease: "power2.inOut" });
         gsap.to(cur, { opacity: 0, duration: fadeDuration, ease: "power2.inOut" });
+
+        // Cinematic slow zoom on the new image
+        gsap.to(next, { scale: 1.12, duration: holdDuration + fadeDuration, ease: "none", force3D: true });
 
         current = nextIdx;
         gsap.delayedCall(holdDuration, runSlide);
@@ -141,6 +145,8 @@ export default function HeroSection() {
 
       const startSlideshow = () => {
         current = 0;
+        // Zoom on first image while it's showing
+        gsap.to(slides[0], { scale: 1.12, duration: holdDuration, ease: "none", force3D: true });
         gsap.delayedCall(holdDuration, runSlide);
       };
 
