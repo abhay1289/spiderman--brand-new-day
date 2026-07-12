@@ -93,6 +93,14 @@ export default function HeroSection() {
         if (scrollHintRef.current) {
           entry.to(scrollHintRef.current, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, textStart + 1.4);
         }
+
+        // Start Ken Burns pan AFTER reveal finishes — no competing scale tweens
+        const revealDuration = isMobile ? 1.8 : 2.4;
+        entry.to(slides[0], {
+          scale: 1.08, xPercent: heroImages[0].panX * 0.4, yPercent: heroImages[0].panY * 0.4,
+          duration: 7, ease: "none", force3D: true,
+          onComplete: () => startSlideshow(),
+        }, revealDuration);
       };
 
       const onPreloaderExit = () => revealHero();
@@ -101,7 +109,7 @@ export default function HeroSection() {
       // Fallback in case event is missed
       const fallbackTimer = setTimeout(() => {
         if (title.current && gsap.getProperty(title.current, "opacity") === 0) revealHero();
-      }, 8000);
+      }, 5000);
 
       // ── Scroll-driven hero exit — parallax fade ──
       gsap.to(fg.current, {
@@ -117,7 +125,7 @@ export default function HeroSection() {
         });
       }
 
-      // ── Cinematic slideshow ──
+      // ── Cinematic slideshow — only starts after reveal ──
       let current = 0;
       const slideDuration = 7;
       const crossfade = 2.8;
@@ -148,8 +156,10 @@ export default function HeroSection() {
         });
       };
 
-      gsap.to(slides[0], { scale: 1.08, xPercent: heroImages[0].panX * 0.4, yPercent: heroImages[0].panY * 0.4, duration: 9, ease: "none" });
-      gsap.delayedCall(9, runSlide);
+      const startSlideshow = () => {
+        current = 0;
+        runSlide();
+      };
 
       return () => {
         window.removeEventListener("preloader-exit", onPreloaderExit);
