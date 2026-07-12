@@ -137,7 +137,7 @@ export default function HeroSection() {
         gsap.to(cur, { opacity: 0, duration: fadeDuration, ease: "power2.inOut" });
 
         // Cinematic slow zoom on the new image
-        gsap.to(next, { scale: 1.12, duration: holdDuration + fadeDuration, ease: "none", force3D: true });
+        gsap.to(next, { scale: 1.05, duration: holdDuration + fadeDuration, ease: "none", force3D: true });
 
         current = nextIdx;
         gsap.delayedCall(holdDuration, runSlide);
@@ -146,7 +146,7 @@ export default function HeroSection() {
       const startSlideshow = () => {
         current = 0;
         // Zoom on first image while it's showing
-        gsap.to(slides[0], { scale: 1.12, duration: holdDuration, ease: "none", force3D: true });
+        gsap.to(slides[0], { scale: 1.05, duration: holdDuration, ease: "none", force3D: true });
         gsap.delayedCall(holdDuration, runSlide);
       };
 
