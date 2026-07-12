@@ -113,12 +113,21 @@ export default function Navbar() {
 
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden relative w-10 h-10 flex items-center justify-center"
+            className="md:hidden relative w-10 h-10 flex items-center justify-center z-[70]"
             aria-label="Toggle menu"
           >
-            <span className={`absolute block w-5 h-[1.5px] rounded-full transition-all duration-500 ease-[cubic-bezier(.4,0,.2,1)] ${menuOpen ? "rotate-45 bg-[#e23636]" : "-translate-y-[5px]"}`} style={{ background: menuOpen ? undefined : "var(--fg)" }} />
-            <span className={`absolute block w-5 h-[1.5px] rounded-full transition-all duration-300 ${menuOpen ? "opacity-0 scale-x-0" : ""}`} style={{ background: "var(--fg)" }} />
-            <span className={`absolute block w-5 h-[1.5px] rounded-full transition-all duration-500 ease-[cubic-bezier(.4,0,.2,1)] ${menuOpen ? "-rotate-45 bg-[#e23636]" : "translate-y-[5px]"}`} style={{ background: menuOpen ? undefined : "var(--fg)" }} />
+            <span
+              className={`absolute block w-5 h-[1.5px] rounded-full transition-all duration-500 ease-[cubic-bezier(.4,0,.2,1)] ${menuOpen ? "rotate-45 translate-y-0" : "-translate-y-[5px]"}`}
+              style={{ background: menuOpen ? "#e23636" : "#f5f5f5" }}
+            />
+            <span
+              className={`absolute block w-5 h-[1.5px] rounded-full transition-all duration-300 ${menuOpen ? "opacity-0 scale-x-0" : ""}`}
+              style={{ background: "#f5f5f5" }}
+            />
+            <span
+              className={`absolute block w-5 h-[1.5px] rounded-full transition-all duration-500 ease-[cubic-bezier(.4,0,.2,1)] ${menuOpen ? "-rotate-45 translate-y-0" : "translate-y-[5px]"}`}
+              style={{ background: menuOpen ? "#e23636" : "#f5f5f5" }}
+            />
           </button>
         </div>
       </div>
