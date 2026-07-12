@@ -129,16 +129,7 @@ export default function FilmographySection() {
         }
       });
 
-      // Dot indicators
-      const dots = Array.from(container.querySelectorAll<HTMLElement>(".film-dot"));
-      const updateDots = (activeIdx: number) => {
-        dots.forEach((dot, j) => {
-          const isActive = j === activeIdx;
-          dot.style.width = isActive ? "24px" : "6px";
-          dot.style.background = isActive ? "#e23636" : "rgba(245,245,245,.15)";
-          dot.style.boxShadow = isActive ? "0 0 12px rgba(226,54,54,.4)" : "none";
-        });
-      };
+      // Progress tracking
 
       // Animate the vertical divider pulse
       const dividerGlow = container.querySelector(".divider-glow") as HTMLElement;
@@ -160,10 +151,6 @@ export default function FilmographySection() {
           onUpdate: (self) => {
             const progressFill = container.querySelector(".film-progress-fill") as HTMLElement;
             if (progressFill) progressFill.style.transform = `scaleX(${self.progress})`;
-            const counter = container.querySelector(".film-counter");
-            const idx = Math.min(totalCards - 1, Math.floor(self.progress * totalCards));
-            if (counter) counter.textContent = `${String(idx + 1).padStart(2, "0")} / ${String(totalCards).padStart(2, "0")}`;
-            updateDots(idx);
           },
         },
       });
@@ -220,25 +207,7 @@ export default function FilmographySection() {
           }} />
         </div>
 
-        {/* Counter + dots */}
-        <div className="absolute top-6 md:top-10 right-6 md:right-10 z-20 flex flex-col items-end gap-2.5">
-          <span className="film-counter font-display text-[10px] tracking-[.3em] tabular-nums" style={{ color: "var(--fg-25)" }}>
-            01 / 04
-          </span>
-          <div className="flex items-center gap-1.5">
-            {films.map((_, j) => (
-              <div
-                key={j}
-                className="film-dot h-[3px] rounded-full transition-all duration-500 ease-[cubic-bezier(.4,0,.2,1)]"
-                style={{
-                  width: j === 0 ? 24 : 6,
-                  background: j === 0 ? "#e23636" : "rgba(245,245,245,.15)",
-                  boxShadow: j === 0 ? "0 0 12px rgba(226,54,54,.4)" : "none",
-                }}
-              />
-            ))}
-          </div>
-        </div>
+        {/* Counter + dots — hidden */}
 
         {/* Film cards */}
         {films.map((film, i) => (
@@ -248,7 +217,7 @@ export default function FilmographySection() {
 
               {/* ── Top/Left: Poster ── */}
               <div className="film-poster relative w-full md:w-1/2 flex items-center justify-center md:py-0" style={{ perspective: "900px" }}>
-                <div className="relative w-[44vw] max-w-[200px] md:w-[320px] md:max-w-none lg:w-[380px]">
+                <div className="relative w-[85vw] max-w-[320px] md:w-[320px] md:max-w-none lg:w-[380px]">
                   {/* Glow behind poster */}
                   <div className="absolute -inset-8 md:-inset-12 rounded-3xl blur-3xl opacity-[.12] pointer-events-none" style={{
                     background: "radial-gradient(circle, rgba(226,54,54,.6), transparent 70%)",
