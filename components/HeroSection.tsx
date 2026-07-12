@@ -56,16 +56,18 @@ export default function HeroSection() {
     const slides = slidesRef.current.filter(Boolean) as HTMLDivElement[];
     if (slides.length < 2) return;
 
+    const isMobile = window.innerWidth < 768;
+
     const ctx = gsap.context(() => {
       // Content hidden initially — waits for preloader
-      gsap.set([title.current, sub.current, countdownRef.current, ctaRef.current], { opacity: 0, y: 50 });
+      gsap.set([title.current, sub.current, countdownRef.current, ctaRef.current], { opacity: 0, y: isMobile ? 30 : 50, force3D: true });
       if (scrollHintRef.current) gsap.set(scrollHintRef.current, { opacity: 0, y: 20 });
 
       slides.forEach((slide, i) => {
-        gsap.set(slide, { opacity: i === 0 ? 1 : 0, scale: 1 });
+        gsap.set(slide, { opacity: i === 0 ? 1 : 0, scale: 1, force3D: true });
       });
 
-      // Hero bursts through the eyes — starts zoomed in, rushes towards camera, settles
+      // Hero entrance — zooms in from scaled up
       let revealed = false;
       const revealHero = () => {
         if (revealed) return;
@@ -73,23 +75,23 @@ export default function HeroSection() {
 
         const entry = gsap.timeline();
 
-        // Hero emerges from deep within the eye portal
-        // Starts heavily zoomed (as if far away through the lens), bright (light flooding in), slightly blurred
+        // Scale-based entrance without expensive filter blur
         entry.fromTo(slides[0],
-          { scale: 1.8, opacity: 0, filter: "brightness(1.6) blur(4px)" },
-          { scale: 1.05, opacity: 1, filter: "brightness(1) blur(0px)", duration: 2.8, ease: "power2.out" },
+          { scale: isMobile ? 1.3 : 1.6, opacity: 0 },
+          { scale: 1.05, opacity: 1, duration: isMobile ? 1.8 : 2.4, ease: "power3.out", force3D: true },
           0
         );
 
         // Text rises after the zoom-out settles — staggered for drama
+        const textStart = isMobile ? 0.6 : 0.9;
         entry
-          .to(title.current, { y: 0, opacity: 1, duration: 1.6, ease: "power4.out" }, 1.1)
-          .to(sub.current, { y: 0, opacity: 1, duration: 1.3, ease: "power3.out" }, 1.4)
-          .to(countdownRef.current, { y: 0, opacity: 1, duration: 1, ease: "power3.out" }, 1.65)
-          .to(ctaRef.current, { y: 0, opacity: 1, duration: 0.9, ease: "back.out(1.4)" }, 1.9);
+          .to(title.current, { y: 0, opacity: 1, duration: isMobile ? 1 : 1.4, ease: "power4.out", force3D: true }, textStart)
+          .to(sub.current, { y: 0, opacity: 1, duration: isMobile ? 0.9 : 1.2, ease: "power3.out", force3D: true }, textStart + 0.2)
+          .to(countdownRef.current, { y: 0, opacity: 1, duration: isMobile ? 0.7 : 0.9, ease: "power3.out", force3D: true }, textStart + 0.4)
+          .to(ctaRef.current, { y: 0, opacity: 1, duration: isMobile ? 0.6 : 0.8, ease: "back.out(1.4)", force3D: true }, textStart + 0.6);
 
         if (scrollHintRef.current) {
-          entry.to(scrollHintRef.current, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 2.8);
+          entry.to(scrollHintRef.current, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, textStart + 1.4);
         }
       };
 
@@ -155,40 +157,43 @@ export default function HeroSection() {
       };
     }, section);
 
-    // Mouse parallax
+    // Mouse parallax — desktop only
     let raf = 0;
-    const damping = 0.04;
-    const parallaxLoop = () => {
-      mouseCurrent.current.x += (mouseTarget.current.x - mouseCurrent.current.x) * damping;
-      mouseCurrent.current.y += (mouseTarget.current.y - mouseCurrent.current.y) * damping;
-      const mx = mouseCurrent.current.x;
-      const my = mouseCurrent.current.y;
-      if (parallaxWrap.current) {
-        parallaxWrap.current.style.transform = `translate3d(${mx * -8}px,${my * -5}px,0)`;
-      }
+    if (!isMobile) {
+      const damping = 0.04;
+      const parallaxLoop = () => {
+        mouseCurrent.current.x += (mouseTarget.current.x - mouseCurrent.current.x) * damping;
+        mouseCurrent.current.y += (mouseTarget.current.y - mouseCurrent.current.y) * damping;
+        const mx = mouseCurrent.current.x;
+        const my = mouseCurrent.current.y;
+        if (parallaxWrap.current) {
+          parallaxWrap.current.style.transform = `translate3d(${mx * -8}px,${my * -5}px,0)`;
+        }
+        raf = requestAnimationFrame(parallaxLoop);
+      };
+      section.addEventListener("mousemove", handleMouseMove);
       raf = requestAnimationFrame(parallaxLoop);
-    };
+    }
 
-    // Scroll parallax for images
+    // Scroll parallax for images — lighter on mobile
     const onScroll = () => {
       const sy = window.scrollY;
       const sectionH = section.offsetHeight;
       if (sy < sectionH) {
         const ratio = sy / sectionH;
+        const offset = isMobile ? ratio * 30 : ratio * 80;
         slides.forEach((slide) => {
           const img = slide.querySelector("img");
-          if (img) img.style.transform = `translateY(${ratio * 80}px) scale(1.08)`;
+          if (img) img.style.transform = `translate3d(0,${offset}px,0) scale(1.08)`;
         });
       }
     };
 
-    section.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("scroll", onScroll, { passive: true });
-    raf = requestAnimationFrame(parallaxLoop);
 
     return () => {
       ctx.revert();
-      section.removeEventListener("mousemove", handleMouseMove);
+      if (!isMobile) section.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(raf);
     };
