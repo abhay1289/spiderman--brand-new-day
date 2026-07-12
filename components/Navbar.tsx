@@ -28,6 +28,16 @@ export default function Navbar() {
     return () => observer.disconnect();
   }, []);
 
+  // Lock body scroll when menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
+
   useEffect(() => {
     let ticking = false;
     const onScroll = () => {
@@ -47,10 +57,10 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-out ${scrolled ? "backdrop-blur-md" : ""}`}
+      className={`fixed top-0 left-0 right-0 z-[60] transition-all duration-700 ease-out ${scrolled && !menuOpen ? "backdrop-blur-md" : ""}`}
       style={{
-        background: scrolled ? "rgba(var(--c-bg),.4)" : "transparent",
-        borderBottom: scrolled ? "1px solid rgba(var(--c-fg),.04)" : "1px solid transparent",
+        background: menuOpen ? "transparent" : (scrolled ? "rgba(var(--c-bg),.4)" : "transparent"),
+        borderBottom: menuOpen ? "1px solid transparent" : (scrolled ? "1px solid rgba(var(--c-fg),.04)" : "1px solid transparent"),
       }}
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -115,7 +125,7 @@ export default function Navbar() {
 
       {/* Mobile menu — fullscreen overlay */}
       <div
-        className={`md:hidden fixed inset-0 z-40 transition-all duration-500 ${menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+        className={`md:hidden fixed inset-0 z-[55] transition-all duration-500 ${menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
         style={{ background: "rgba(6,6,8,.97)", backdropFilter: "blur(20px)" }}
       >
         <div className="flex flex-col justify-center items-center h-full gap-1">
