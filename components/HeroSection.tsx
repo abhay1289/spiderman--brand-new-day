@@ -7,8 +7,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const heroImages = [
-  { src: "/spiderman-edge-of-tomorrow-72-3840x2160.jpg", pos: "center 20%", panX: -0.6, panY: -0.3, scaleFrom: 1.02, scaleTo: 1.1 },
-  { src: "/tom-holland-as-peter-parker-spider-man-brand-new-day-uz-3840x2160.jpg", pos: "center 30%", panX: 0.5, panY: -0.2, scaleFrom: 1.1, scaleTo: 1.02 },
+  { src: "/spiderman-edge-of-tomorrow-72-3840x2160.jpg", pos: "center 20%" },
+  { src: "/tom-holland-as-peter-parker-spider-man-brand-new-day-uz-3840x2160.jpg", pos: "center 30%" },
 ];
 
 function getTimeLeft() {
@@ -94,13 +94,9 @@ export default function HeroSection() {
           entry.to(scrollHintRef.current, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, textStart + 1.4);
         }
 
-        // Start Ken Burns pan AFTER reveal finishes — no competing scale tweens
+        // Start simple crossfade slideshow after reveal
         const revealDuration = isMobile ? 1.8 : 2.4;
-        entry.to(slides[0], {
-          scale: 1.08, xPercent: heroImages[0].panX * 0.4, yPercent: heroImages[0].panY * 0.4,
-          duration: 7, ease: "none", force3D: true,
-          onComplete: () => startSlideshow(),
-        }, revealDuration);
+        entry.call(() => startSlideshow(), [], revealDuration + 0.5);
       };
 
       const onPreloaderExit = () => revealHero();
@@ -125,40 +121,27 @@ export default function HeroSection() {
         });
       }
 
-      // ── Cinematic slideshow — only starts after reveal ──
+      // ── Simple crossfade slideshow — 3s per image, no Ken Burns ──
       let current = 0;
-      const slideDuration = 7;
-      const crossfade = 2.8;
+      const holdDuration = 3;
+      const fadeDuration = 1;
 
       const runSlide = () => {
-        const curIdx = current;
         const nextIdx = (current + 1) % slides.length;
-        const cur = slides[curIdx];
+        const cur = slides[current];
         const next = slides[nextIdx];
-        const curImg = heroImages[curIdx];
-        const nextImg = heroImages[nextIdx];
 
-        gsap.fromTo(cur,
-          { scale: curImg.scaleFrom, xPercent: 0, yPercent: 0, opacity: 1 },
-          { scale: curImg.scaleTo, xPercent: curImg.panX, yPercent: curImg.panY, duration: slideDuration, ease: "none" }
-        );
+        gsap.set(next, { scale: 1.05, opacity: 0 });
+        gsap.to(next, { opacity: 1, duration: fadeDuration, ease: "power2.inOut" });
+        gsap.to(cur, { opacity: 0, duration: fadeDuration, ease: "power2.inOut" });
 
-        gsap.delayedCall(slideDuration - crossfade, () => {
-          gsap.to(vignetteRef.current, { opacity: 0.7, duration: crossfade * 0.45, ease: "power1.in" });
-          gsap.to(vignetteRef.current, { opacity: 0, duration: crossfade * 0.55, ease: "power1.out", delay: crossfade * 0.45 });
-
-          gsap.set(next, { scale: nextImg.scaleFrom, xPercent: -nextImg.panX * 0.3, yPercent: -nextImg.panY * 0.3, opacity: 0 });
-          gsap.to(next, { opacity: 1, xPercent: 0, yPercent: 0, duration: crossfade, ease: "power1.inOut" });
-          gsap.to(cur, { opacity: 0, duration: crossfade, ease: "power1.inOut" });
-
-          current = nextIdx;
-          gsap.delayedCall(crossfade, runSlide);
-        });
+        current = nextIdx;
+        gsap.delayedCall(holdDuration, runSlide);
       };
 
       const startSlideshow = () => {
         current = 0;
-        runSlide();
+        gsap.delayedCall(holdDuration, runSlide);
       };
 
       return () => {
