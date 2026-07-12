@@ -63,8 +63,8 @@ export default function HeroSection() {
       gsap.set([title.current, sub.current, countdownRef.current, ctaRef.current], { opacity: 0, y: isMobile ? 30 : 50, force3D: true });
       if (scrollHintRef.current) gsap.set(scrollHintRef.current, { opacity: 0, y: 20 });
 
-      slides.forEach((slide, i) => {
-        gsap.set(slide, { opacity: i === 0 ? 1 : 0, scale: 1, force3D: true });
+      slides.forEach((slide) => {
+        gsap.set(slide, { opacity: 0, scale: 1, force3D: true });
       });
 
       // Hero entrance — zooms in from scaled up
