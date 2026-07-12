@@ -243,13 +243,14 @@ export default function FilmographySection() {
         {/* Film cards */}
         {films.map((film, i) => (
           <div key={film.year} className="film-card absolute inset-0 z-10">
-            <div className="w-full h-full flex flex-row">
+            {/* Mobile: vertical stack | Desktop: side-by-side */}
+            <div className="w-full h-full flex flex-col md:flex-row">
 
-              {/* ── Left: Poster ── */}
-              <div className="film-poster relative w-[45%] md:w-1/2 flex items-center justify-center py-4 md:py-0" style={{ perspective: "900px" }}>
-                <div className="relative w-[140px] sm:w-[180px] md:w-[320px] lg:w-[380px]">
+              {/* ── Top/Left: Poster ── */}
+              <div className="film-poster relative w-full md:w-1/2 flex items-end md:items-center justify-center pt-12 pb-3 md:py-0" style={{ perspective: "900px", flex: "0 0 auto" }}>
+                <div className="relative w-[42vw] max-w-[200px] md:w-[320px] md:max-w-none lg:w-[380px]">
                   {/* Glow behind poster */}
-                  <div className="absolute -inset-12 rounded-3xl blur-3xl opacity-[.12] pointer-events-none" style={{
+                  <div className="absolute -inset-8 md:-inset-12 rounded-3xl blur-3xl opacity-[.12] pointer-events-none" style={{
                     background: "radial-gradient(circle, rgba(226,54,54,.6), transparent 70%)",
                   }} />
 
@@ -258,7 +259,7 @@ export default function FilmographySection() {
                     onMouseLeave={handlePosterLeave}
                     className="relative rounded-lg overflow-hidden group"
                     style={{
-                      aspectRatio: "3/4.5",
+                      aspectRatio: "3/4",
                       transformStyle: "preserve-3d",
                       border: "1px solid rgba(226,54,54,.1)",
                       boxShadow: "0 8px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.03) inset",
@@ -298,7 +299,7 @@ export default function FilmographySection() {
                     }} />
 
                     {/* Year badge */}
-                    <div className="absolute bottom-4 left-4 flex items-center gap-2 opacity-80 group-hover:opacity-100 transition-opacity duration-500">
+                    <div className="absolute bottom-3 left-3 md:bottom-4 md:left-4 flex items-center gap-2 opacity-80 group-hover:opacity-100 transition-opacity duration-500">
                       <div className="w-1 h-1 rotate-45" style={{ background: "rgba(226,54,54,.8)" }} />
                       <span className="font-display text-[9px] tracking-[.4em] uppercase" style={{
                         color: "rgba(255,255,255,.9)",
@@ -309,21 +310,21 @@ export default function FilmographySection() {
                     </div>
 
                     {/* Film number — large, bottom right of poster */}
-                    <div className="absolute bottom-3 right-4 font-display text-[48px] md:text-[56px] leading-none font-bold pointer-events-none select-none opacity-[.06] group-hover:opacity-[.12] transition-opacity duration-700">
+                    <div className="absolute bottom-2 right-3 md:bottom-3 md:right-4 font-display text-[36px] md:text-[56px] leading-none font-bold pointer-events-none select-none opacity-[.06] group-hover:opacity-[.12] transition-opacity duration-700">
                       {film.number}
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* ── Right: Info ── */}
-              <div className="w-[55%] md:w-1/2 flex items-center px-4 md:px-0">
+              {/* ── Bottom/Right: Info ── */}
+              <div className="w-full md:w-1/2 flex-1 flex items-start md:items-center px-5 md:px-0 pt-4 md:pt-0 overflow-hidden">
                 <div className="w-full md:pl-14 lg:pl-20 md:pr-10 lg:pr-16">
 
                   {/* Film number label */}
-                  <div className="film-num-label flex items-center gap-2 md:gap-3 mb-4 md:mb-8">
+                  <div className="film-num-label flex items-center gap-2 md:gap-3 mb-2 md:mb-8">
                     <div className="h-px w-5" style={{ background: "var(--accent-40)" }} />
-                    <span className="font-display text-[10px] tracking-[.5em] uppercase" style={{
+                    <span className="font-display text-[9px] md:text-[10px] tracking-[.4em] md:tracking-[.5em] uppercase" style={{
                       color: "var(--accent)",
                       textShadow: "0 0 20px rgba(226,54,54,.25)",
                     }}>
@@ -332,49 +333,49 @@ export default function FilmographySection() {
                   </div>
 
                   {/* Title */}
-                  <h3 className="film-title font-serif-accent text-lg sm:text-2xl md:text-4xl lg:text-5xl italic leading-[1.15]" style={{ color: "var(--fg)" }}>
+                  <h3 className="film-title font-serif-accent text-xl sm:text-2xl md:text-4xl lg:text-5xl italic leading-[1.15]" style={{ color: "var(--fg)" }}>
                     {film.title}
                   </h3>
 
                   {/* Meta */}
-                  <div className="film-meta flex items-center gap-2 md:gap-3 mt-3 md:mt-6">
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full transition-all duration-300 hover:scale-105" style={{
+                  <div className="film-meta flex items-center gap-2 md:gap-3 mt-2.5 md:mt-6">
+                    <div className="flex items-center gap-1.5 px-2 md:px-2.5 py-0.5 md:py-1 rounded-full transition-all duration-300 hover:scale-105" style={{
                       background: "rgba(226,54,54,.08)",
                       border: "1px solid rgba(226,54,54,.12)",
                     }}>
                       <svg width="9" height="9" viewBox="0 0 24 24" fill="rgba(226,54,54,.8)" stroke="none">
                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                       </svg>
-                      <span className="font-display text-[10px] tracking-[.15em] uppercase" style={{ color: "var(--accent-70)" }}>
+                      <span className="font-display text-[9px] md:text-[10px] tracking-[.15em] uppercase" style={{ color: "var(--accent-70)" }}>
                         {film.rating}
                       </span>
                     </div>
                     <span className="w-px h-3" style={{ background: "var(--fg-08)" }} />
-                    <span className="font-display text-[10px] tracking-[.2em] uppercase" style={{ color: "var(--fg-30)" }}>
+                    <span className="font-display text-[9px] md:text-[10px] tracking-[.2em] uppercase" style={{ color: "var(--fg-30)" }}>
                       {film.runtime}
                     </span>
                   </div>
 
                   {/* Synopsis */}
-                  <p className="film-synopsis mt-3 md:mt-7 text-xs md:text-sm leading-[1.7] md:leading-[2] font-light" style={{ color: "var(--fg-45)" }}>
+                  <p className="film-synopsis mt-2.5 md:mt-7 text-[11px] md:text-sm leading-[1.6] md:leading-[2] font-light" style={{ color: "var(--fg-45)" }}>
                     {film.synopsis}
                   </p>
 
                   {/* Director & Cast — rows with hover highlight */}
-                  <div className="film-credits mt-4 md:mt-8 space-y-0" style={{ borderTop: "1px solid var(--fg-06)" }}>
-                    <div className="group/row flex items-center justify-between py-2 md:py-3.5 transition-all duration-300 hover:pl-2" style={{ borderBottom: "1px solid var(--fg-04)" }}>
+                  <div className="film-credits mt-3 md:mt-8 space-y-0" style={{ borderTop: "1px solid var(--fg-06)" }}>
+                    <div className="group/row flex items-center justify-between py-1.5 md:py-3.5 transition-all duration-300 hover:pl-2" style={{ borderBottom: "1px solid var(--fg-04)" }}>
                       <span className="font-display text-[8px] md:text-[9px] tracking-[.3em] md:tracking-[.4em] uppercase transition-colors duration-300 group-hover/row:text-[rgba(245,245,245,.35)]" style={{ color: "var(--fg-20)" }}>
                         Director
                       </span>
-                      <span className="text-xs md:text-sm font-light transition-colors duration-300 group-hover/row:text-[rgba(245,245,245,.7)]" style={{ color: "var(--fg-50)" }}>
+                      <span className="text-[11px] md:text-sm font-light transition-colors duration-300 group-hover/row:text-[rgba(245,245,245,.7)]" style={{ color: "var(--fg-50)" }}>
                         {film.director}
                       </span>
                     </div>
-                    <div className="group/row flex items-center justify-between py-2 md:py-3.5 transition-all duration-300 hover:pl-2">
+                    <div className="group/row flex items-center justify-between py-1.5 md:py-3.5 transition-all duration-300 hover:pl-2">
                       <span className="font-display text-[8px] md:text-[9px] tracking-[.3em] md:tracking-[.4em] uppercase transition-colors duration-300 group-hover/row:text-[rgba(245,245,245,.35)]" style={{ color: "var(--fg-20)" }}>
                         Cast
                       </span>
-                      <span className="text-xs md:text-sm font-light text-right transition-colors duration-300 group-hover/row:text-[rgba(226,54,54,.7)]" style={{ color: "var(--accent-50)" }}>
+                      <span className="text-[11px] md:text-sm font-light text-right transition-colors duration-300 group-hover/row:text-[rgba(226,54,54,.7)]" style={{ color: "var(--accent-50)" }}>
                         {film.cast}
                       </span>
                     </div>
